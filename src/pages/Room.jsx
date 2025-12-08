@@ -242,7 +242,7 @@ const Room = () => {
     };
 
     // If username is not set, don't render the room yet (show modal)
-    if (!isNameSet && !username) {
+    if (!isNameSet) {
         return (
             <div className="flex flex-col items-center justify-center h-screen bg-dark-900 text-white">
                 <div className="bg-dark-800 p-8 rounded-2xl shadow-2xl border border-white/10 w-96">
