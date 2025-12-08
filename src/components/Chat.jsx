@@ -77,7 +77,7 @@ const Chat = ({ socket, roomID, onClose }) => {
     };
 
     return (
-        <div className="flex flex-col h-[calc(100%-80px)] md:h-full bg-dark-800 border-l border-white/5 w-full md:w-96 shadow-2xl glass-panel fixed md:relative right-0 top-0 z-20">
+        <div className="flex flex-col fixed inset-0 z-50 md:z-20 md:static md:h-full bg-dark-800 border-l border-white/5 w-full md:w-96 shadow-2xl glass-panel md:relative">
             {/* Header */}
             <div className="p-4 border-b border-white/5 flex justify-between items-center bg-dark-900/50">
                 <h3 className="text-white font-semibold flex items-center gap-2">
