@@ -144,13 +144,56 @@ const Home = () => {
                             Our Team
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {['Amrit Kumar Gupta', 'Sunny Yadav', 'Abhinav Singh', 'Talib Shiddique'].map((member, idx) => (
-                                <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-dark-700/50 hover:bg-dark-700 transition-colors">
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vizor-500 to-vizor-accent flex items-center justify-center text-xs font-bold text-white">
-                                        {member.split(' ').map(n => n[0]).join('')}
+                            {[
+                                { name: 'Amrit Kumar Gupta', role: 'Leader', username: 'p1amrit', url: 'https://www.instagram.com/p1amrit/' },
+                                { name: 'Sunny Yadav', username: 'sunnyyadav__03', url: 'https://www.instagram.com/sunnyyadav__03/' },
+                                { name: 'Abhinav Singh', username: 'abhinav_9293', url: 'https://www.instagram.com/abhinav_9293/' },
+                                { name: 'Talib Shiddique', username: 'mr.siddiqui_003', url: 'https://www.instagram.com/mr.siddiqui_003/' }
+                            ].map((member, idx) => (
+                                <a
+                                    key={idx}
+                                    href={member.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-3 p-3 rounded-xl bg-dark-700/50 hover:bg-dark-700 hover:scale-105 transition-all group cursor-pointer border border-transparent hover:border-vizor-500/30"
+                                >
+                                    <div className="relative">
+                                        <div className="w-12 h-12 rounded-full overflow-hidden bg-dark-600 ring-2 ring-transparent group-hover:ring-vizor-500 transition-all">
+                                            <img
+                                                src={`https://unavatar.io/instagram/${member.username}`}
+                                                alt={member.name}
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.nextSibling.style.display = 'flex';
+                                                }}
+                                                className="w-full h-full object-cover"
+                                            />
+                                            <div className="w-full h-full bg-gradient-to-br from-vizor-500 to-vizor-accent hidden items-center justify-center text-xs font-bold text-white absolute top-0 left-0">
+                                                {member.name.split(' ').map(n => n[0]).join('')}
+                                            </div>
+                                        </div>
+                                        {member.role === 'Leader' && (
+                                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full border-2 border-dark-800 flex items-center justify-center" title="Leader">
+                                                <svg className="w-2.5 h-2.5 text-black fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+                                            </div>
+                                        )}
                                     </div>
-                                    <span className="text-gray-200 font-medium text-sm">{member}</span>
-                                </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-gray-200 font-medium text-sm group-hover:text-white transition-colors">
+                                            {member.name}
+                                        </span>
+                                        {member.role === 'Leader' && (
+                                            <span className="text-[10px] uppercase font-bold text-vizor-400 tracking-wider">
+                                                Team Leader
+                                            </span>
+                                        )}
+                                        {!member.role && (
+                                            <span className="text-[10px] text-gray-500 group-hover:text-vizor-400/70 transition-colors">
+                                                @ {member.username}
+                                            </span>
+                                        )}
+                                    </div>
+                                </a>
                             ))}
                         </div>
                     </motion.div>
