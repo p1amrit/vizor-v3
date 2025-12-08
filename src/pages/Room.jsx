@@ -4,7 +4,7 @@ import Peer from "simple-peer";
 import { useParams, useNavigate } from 'react-router-dom';
 import Video from '../components/Video';
 import Chat from '../components/Chat';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, Users, MessageSquare, Copy } from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, Users, MessageSquare, Copy, UserMinus } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
 const Room = () => {
@@ -26,6 +26,7 @@ const Room = () => {
     // User Identity
     const [username, setUsername] = useState(localStorage.getItem('vizor_username') || '');
     const [isNameSet, setIsNameSet] = useState(false);
+    const [isHost, setIsHost] = useState(false);
 
     // Use environment variable for server URL (Production) or default to relative path (Local Proxy)
     const SERVER_URL = import.meta.env.VITE_SERVER_URL || '/';
@@ -114,6 +115,19 @@ const Room = () => {
                     },
                 });
             });
+
+            // Host Events
+            socketRef.current.on("set-host", (status) => {
+                setIsHost(status);
+                if (status) toast.success("You are now the Host 👑");
+            });
+
+            socketRef.current.on("kicked", () => {
+                toast.error("You have been kicked by the host 🚫");
+                socketRef.current.disconnect();
+                navigate('/');
+            });
+
         }).catch(err => {
             console.error("Failed to get local stream", err);
             // Permissions handled by browser mostly, but good to catch
@@ -193,6 +207,12 @@ const Room = () => {
         }
         socketRef.current.disconnect();
         navigate('/');
+    };
+
+    const kickUser = (targetID) => {
+        if (confirm("Are you sure you want to kick this user?")) {
+            socketRef.current.emit("kick-user", { roomID, targetID });
+        }
     };
 
     const toggleScreenShare = () => {
@@ -308,16 +328,26 @@ const Room = () => {
                             <video muted ref={userVideo} autoPlay playsInline className="w-full h-full object-cover transform scale-x-[-1]" />
                             <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-md px-3 py-1 rounded-lg text-sm font-medium z-10 flex flex-col">
                                 <span>{username} (You)</span>
+                                <span>{isHost ? '👑 Host' : ''}</span>
                                 <span className="text-xs text-gray-400">{audioEnabled ? '' : '(Muted)'}</span>
                             </div>
                         </div>
                         {/* Remote Videos */}
                         {peers.map((peer, index) => (
-                            <div key={peer.peerID} className="relative aspect-video bg-gray-800 rounded-xl overflow-hidden border border-gray-700 shadow-2xl w-full">
+                            <div key={peer.peerID} className="relative aspect-video bg-gray-800 rounded-xl overflow-hidden border border-gray-700 shadow-2xl w-full group">
                                 <Video peer={peer.peer} />
                                 <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-md px-3 py-1 rounded-lg text-sm font-medium z-10">
                                     Guest {index + 1}
                                 </div>
+                                {isHost && (
+                                    <button
+                                        onClick={() => kickUser(peer.peerID)}
+                                        className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg opacity-0 group-hover:opacity-100 transition shadow-lg"
+                                        title="Kick User"
+                                    >
+                                        <UserMinus className="w-4 h-4" />
+                                    </button>
+                                )}
                             </div>
                         ))}
                     </div>

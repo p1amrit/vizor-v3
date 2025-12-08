@@ -15,6 +15,8 @@ const users = {};
 const socketToRoom = {};
 const socketToName = {};
 
+const roomHosts = {};
+
 io.on("connection", socket => {
     socket.on("join-room", payload => {
         // Handle legacy string payload or new object payload
@@ -34,6 +36,9 @@ io.on("connection", socket => {
             users[roomID].push(socket.id);
         } else {
             users[roomID] = [socket.id];
+            // First user is the host
+            roomHosts[roomID] = socket.id;
+            socket.emit("set-host", true);
         }
 
         console.log(`Room ${roomID} has users:`, users[roomID]);
@@ -43,6 +48,13 @@ io.on("connection", socket => {
         const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
 
         socket.emit("all-users", usersInThisRoom);
+
+        // Let the user know if they are host (redundant check for non-creators)
+        if (roomHosts[roomID] === socket.id) {
+            socket.emit("set-host", true);
+        } else {
+            socket.emit("set-host", false);
+        }
     });
 
     socket.on("sending-signal", payload => {
@@ -58,6 +70,15 @@ io.on("connection", socket => {
         io.to(payload.callerID).emit("receiving-returned-signal", { signal: payload.signal, id: socket.id });
     });
 
+    socket.on("kick-user", ({ roomID, targetID }) => {
+        // Only allow if requester is the host
+        if (roomHosts[roomID] === socket.id) {
+            io.to(targetID).emit("kicked");
+            // Disconnect the user
+            io.sockets.sockets.get(targetID)?.disconnect(true);
+        }
+    });
+
     socket.on("disconnect", () => {
         const roomID = socketToRoom[socket.id];
         const name = socketToName[socket.id] || 'User';
@@ -68,6 +89,17 @@ io.on("connection", socket => {
             users[roomID] = room;
             // Notify remaining users to remove the peer
             socket.to(roomID).emit('user-left', { id: socket.id, name });
+
+            // Host Migration
+            if (roomHosts[roomID] === socket.id) {
+                if (room.length > 0) {
+                    const newHost = room[0];
+                    roomHosts[roomID] = newHost;
+                    io.to(newHost).emit("set-host", true);
+                } else {
+                    delete roomHosts[roomID];
+                }
+            }
 
             // Clean up
             delete socketToName[socket.id];
