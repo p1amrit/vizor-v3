@@ -171,12 +171,19 @@ const Home = () => {
                                     <div className="relative">
                                         <div className="w-12 h-12 rounded-full overflow-hidden bg-dark-600 ring-2 ring-transparent group-hover:ring-vizor-500 transition-all">
                                             <img
-                                                src={`https://unavatar.io/instagram/${member.username}`}
+                                                src={`/team/${member.username}.jpg`}
                                                 alt={member.name}
                                                 onError={(e) => {
-                                                    // Fallback to DiceBear cool avatars
-                                                    e.target.onerror = null; // prevent infinite loop
-                                                    e.target.src = `https://api.dicebear.com/9.x/avataaars/svg?seed=${member.username}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+                                                    const target = e.target;
+                                                    // Strategy: Local -> Unavatar (Insta) -> DiceBear (Cartoon)
+                                                    if (target.src.includes('/team/')) {
+                                                        // Try Insta API
+                                                        target.src = `https://unavatar.io/instagram/${member.username}`;
+                                                    } else if (target.src.includes('unavatar.io')) {
+                                                        // Fallback to DiceBear
+                                                        target.onerror = null;
+                                                        target.src = `https://api.dicebear.com/9.x/avataaars/svg?seed=${member.username}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+                                                    }
                                                 }}
                                                 className="w-full h-full object-cover"
                                             />
