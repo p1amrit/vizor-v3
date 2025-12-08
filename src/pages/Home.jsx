@@ -132,6 +132,10 @@ const Home = () => {
                     </div>
                 </motion.div>
             </main>
+
+            <footer className="w-full p-6 text-center z-10 text-gray-500 text-sm font-medium">
+                Made With ❤️ By <span className="text-white hover:text-vizor-400 transition cursor-pointer">Amrit</span>
+            </footer>
         </div>
     );
 };

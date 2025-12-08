@@ -267,6 +267,9 @@ const Room = () => {
                     >
                         Join Room
                     </button>
+                    <div className="mt-6 text-center text-xs text-gray-500">
+                        Made With ❤️ By <span className="text-gray-300">Amrit</span>
+                    </div>
                 </div>
             </div>
         );
