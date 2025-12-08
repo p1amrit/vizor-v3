@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Video from '../components/Video';
 import Chat from '../components/Chat';
 import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, Users, MessageSquare, Copy } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Room = () => {
     const [peers, setPeers] = useState([]);
@@ -76,6 +77,13 @@ const Room = () => {
                     peer,
                 };
                 setPeers(users => [...users, peerObj]);
+                toast.success('New user joined the room 🚀', {
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                });
             });
 
             socketRef.current.on("receiving-returned-signal", payload => {
@@ -93,6 +101,14 @@ const Room = () => {
                 const peers = peersRef.current.filter(p => p.peerID !== id);
                 peersRef.current = peers;
                 setPeers(peers);
+                toast('User left the room', {
+                    icon: '👋',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                });
             });
         }).catch(err => {
             console.error("Failed to get local stream", err);
@@ -244,8 +260,8 @@ const Room = () => {
     // If username is not set, don't render the room yet (show modal)
     if (!isNameSet) {
         return (
-            <div className="flex flex-col items-center justify-center h-screen bg-dark-900 text-white">
-                <div className="bg-dark-800 p-8 rounded-2xl shadow-2xl border border-white/10 w-96">
+            <div className="flex flex-col items-center justify-center h-screen bg-dark-900 text-white px-4">
+                <div className="bg-dark-800 p-6 md:p-8 rounded-2xl shadow-2xl border border-white/10 w-full max-w-md">
                     <h2 className="text-2xl font-bold mb-6 text-center">Join Meeting</h2>
                     <input
                         type="text"
@@ -375,6 +391,7 @@ const Room = () => {
 
                 <div className="hidden md:block w-[100px]"></div>
             </div>
+            <Toaster position="top-center" reverseOrder={false} />
         </div>
     );
 };
