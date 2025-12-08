@@ -4,7 +4,7 @@ import Peer from "simple-peer";
 import { useParams, useNavigate } from 'react-router-dom';
 import Video from '../components/Video';
 import Chat from '../components/Chat';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, Users, MessageSquare } from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, Users, MessageSquare, Copy } from 'lucide-react';
 
 const Room = () => {
     const [peers, setPeers] = useState([]);
@@ -317,55 +317,63 @@ const Room = () => {
             </div>
 
             {/* Bottom Controls */}
-            <div className="h-20 bg-dark-800 border-t border-white/5 px-6 flex items-center justify-between z-30 backdrop-blur-lg bg-opacity-90 shrink-0">
-                <div className="flex items-center gap-4 text-white font-medium">
-                    <span className="text-gray-400 text-sm hidden sm:inline-block">
+            <div className="h-auto pb-6 pt-4 md:py-0 md:h-20 bg-dark-800 border-t border-white/5 px-4 md:px-6 flex flex-wrap md:flex-nowrap items-center justify-between z-30 backdrop-blur-lg bg-opacity-90 shrink-0 gap-4 md:gap-0">
+                <div className="flex items-center gap-4 text-white font-medium w-full md:w-auto justify-between md:justify-start">
+                    <span className="text-gray-400 text-sm">
                         {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                     <span className={`text-xs px-2 py-1 rounded bg-dark-700 ${connectionStatus.includes('failed') ? 'text-red-400' : 'text-green-400'}`}>
                         {connectionStatus}
                     </span>
-                    <span className="text-gray-200 text-sm font-mono opacity-50 hidden md:block">
-                        {roomID}
-                    </span>
+                    <button
+                        onClick={() => {
+                            navigator.clipboard.writeText(roomID);
+                            alert('Room ID copied!');
+                        }}
+                        className="flex items-center gap-2 text-gray-200 text-sm font-mono opacity-70 hover:opacity-100 bg-white/5 px-2 py-1 rounded cursor-pointer"
+                        title="Copy Room ID"
+                    >
+                        <span className="truncate max-w-[100px]">{roomID}</span>
+                        <Copy className="w-3 h-3" />
+                    </button>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 md:gap-3 justify-center w-full md:w-auto">
                     <button
                         onClick={toggleAudio}
-                        className={`p-4 rounded-full transition-all ${audioEnabled ? 'bg-dark-700 hover:bg-dark-600 text-white' : 'bg-red-500/10 text-red-500 hover:bg-red-500/20'}`}
+                        className={`p-3 md:p-4 rounded-full transition-all ${audioEnabled ? 'bg-dark-700 hover:bg-dark-600 text-white' : 'bg-red-500/10 text-red-500 hover:bg-red-500/20'}`}
                     >
                         {audioEnabled ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
                     </button>
                     <button
                         onClick={toggleVideo}
-                        className={`p-4 rounded-full transition-all ${videoEnabled ? 'bg-dark-700 hover:bg-dark-600 text-white' : 'bg-red-500/10 text-red-500 hover:bg-red-500/20'}`}
+                        className={`p-3 md:p-4 rounded-full transition-all ${videoEnabled ? 'bg-dark-700 hover:bg-dark-600 text-white' : 'bg-red-500/10 text-red-500 hover:bg-red-500/20'}`}
                     >
                         {videoEnabled ? <VideoIcon className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
                     </button>
                     <button
                         onClick={toggleScreenShare}
-                        className={`p-4 rounded-full transition-all ${isScreenSharing ? 'bg-vizor-600 text-white' : 'bg-dark-700 hover:bg-dark-600 text-white'}`}
+                        className={`p-3 md:p-4 rounded-full transition-all ${isScreenSharing ? 'bg-vizor-600 text-white' : 'bg-dark-700 hover:bg-dark-600 text-white'}`}
                         title="Share Screen"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 3H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3" /><path d="M8 21h8" /><path d="M12 17v4" /><path d="M17 8l5-5" /><path d="M17 3h5v5" /></svg>
                     </button>
                     <button
                         onClick={() => setIsChatOpen(!isChatOpen)}
-                        className={`p-4 rounded-full transition-all ${isChatOpen ? 'bg-vizor-600 text-white' : 'bg-dark-700 hover:bg-dark-600 text-white'}`}
+                        className={`p-3 md:p-4 rounded-full transition-all ${isChatOpen ? 'bg-vizor-600 text-white' : 'bg-dark-700 hover:bg-dark-600 text-white'}`}
                     >
                         <MessageSquare className="w-5 h-5" />
                     </button>
                     <button
                         onClick={leaveCall}
-                        className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-full font-semibold transition-colors flex items-center gap-2"
+                        className="px-4 md:px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-full font-semibold transition-colors flex items-center gap-2"
                     >
                         <PhoneOff className="w-5 h-5" />
-                        <span className="hidden sm:inline">End Call</span>
+                        <span className="hidden md:inline">End Call</span>
                     </button>
                 </div>
 
-                <div className="w-[100px] hidden sm:block"></div>
+                <div className="hidden md:block w-[100px]"></div>
             </div>
         </div>
     );

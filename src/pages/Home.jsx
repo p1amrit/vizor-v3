@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { motion } from 'framer-motion';
-import { Video, Users, Zap, Hash } from 'lucide-react';
+import { Video, Users, Zap, Hash, Copy, Check } from 'lucide-react';
 
 const Home = () => {
     const navigate = useNavigate();
     const [joinRoomId, setJoinRoomId] = useState('');
+    const [copied, setCopied] = useState(false);
 
     const startMeeting = () => {
         const id = Math.random().toString(36).substring(2, 7);
@@ -38,10 +39,7 @@ const Home = () => {
                     <button className="hover:text-white transition-colors">Pricing</button>
                 </div>
                 <div className="flex gap-4">
-                    <button className="text-gray-300 hover:text-white font-medium">Log In</button>
-                    <button className="px-5 py-2.5 bg-white text-black font-semibold rounded-full hover:bg-gray-100 transition-transform active:scale-95">
-                        Sign Up Free
-                    </button>
+                    {/* Auth removed as per request */}
                 </div>
             </nav>
 
@@ -78,19 +76,32 @@ const Home = () => {
                             New Meeting
                         </motion.button>
 
-                        <div className="flex items-center gap-2 w-full md:w-auto bg-dark-800 border border-dark-700/50 p-2 pl-4 rounded-2xl focus-within:ring-2 focus-within:ring-vizor-500/50 transition-all">
-                            <Hash className="w-5 h-5 text-gray-500" />
+                        <div className="relative flex items-center gap-2 w-full md:w-auto bg-dark-800 border-2 border-vizor-500/50 p-2 pl-4 rounded-2xl shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:shadow-[0_0_30px_rgba(124,58,237,0.5)] transition-all group">
+                            <Hash className="w-5 h-5 text-vizor-500" />
                             <input
                                 type="text"
-                                placeholder="Enter a code or link"
-                                className="bg-transparent border-none outline-none text-white placeholder-gray-500 w-full"
+                                placeholder="Enter code"
+                                className="bg-transparent border-none outline-none text-white placeholder-gray-500 w-full md:w-48 font-mono tracking-wider"
                                 value={joinRoomId}
                                 onChange={(e) => setJoinRoomId(e.target.value)}
                             />
+                            {joinRoomId && (
+                                <button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(joinRoomId);
+                                        setCopied(true);
+                                        setTimeout(() => setCopied(false), 2000);
+                                    }}
+                                    className="p-2 text-gray-400 hover:text-white transition-colors"
+                                    title="Copy Code"
+                                >
+                                    {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                                </button>
+                            )}
                             <button
                                 onClick={joinMeeting}
                                 disabled={!joinRoomId}
-                                className="px-4 py-2 bg-dark-700 text-gray-300 rounded-xl font-medium hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="px-6 py-3 bg-vizor-600 text-white rounded-xl font-bold hover:bg-vizor-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-vizor-500/50"
                             >
                                 Join
                             </button>
