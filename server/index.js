@@ -31,6 +31,7 @@ io.on("connection", socket => {
         console.log(`Room ${roomID} has users:`, users[roomID]);
 
         socketToRoom[socket.id] = roomID;
+        socket.join(roomID); // Join the socket.io room for chat broadcasting
         const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
 
         socket.emit("all-users", usersInThisRoom);
