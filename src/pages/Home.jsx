@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { motion } from 'framer-motion';
-import { Video, Users, Zap, Hash, Copy, Check } from 'lucide-react';
+import { Video, Users, Zap, Hash, Copy, Check, Linkedin, Instagram } from 'lucide-react';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -156,48 +156,56 @@ const Home = () => {
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[
-                                { name: 'Amrit Kumar Gupta', role: 'Leader', username: 'p1amrit', url: 'https://www.instagram.com/p1amrit/' },
+                                { name: 'Amrit Kumar Gupta', role: 'Leader', username: 'p1amrit', url: 'https://www.instagram.com/p1amrit/', linkedin: 'https://www.linkedin.com/in/p1amrit/' },
                                 { name: 'Sunny Yadav', username: 'sunnyyadav__03', url: 'https://www.instagram.com/sunnyyadav__03/' },
                                 { name: 'Abhinav Singh', username: 'abhinav_9293', url: 'https://www.instagram.com/abhinav_9293/' },
                                 { name: 'Talib Shiddique', username: 'mr.siddiqui_003', url: 'https://www.instagram.com/mr.siddiqui_003/' }
                             ].map((member, idx) => (
-                                <a
+                                <div
                                     key={idx}
-                                    href={member.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-3 p-3 rounded-xl bg-dark-700/50 hover:bg-dark-700 hover:scale-105 transition-all group cursor-pointer border border-transparent hover:border-vizor-500/30"
+                                    className="flex items-center gap-3 p-3 rounded-xl bg-dark-700/50 hover:bg-dark-700 transition-all border border-transparent hover:border-vizor-500/30 group"
                                 >
                                     <div className="relative">
-                                        <div className="w-12 h-12 rounded-full overflow-hidden bg-dark-600 ring-2 ring-transparent group-hover:ring-vizor-500 transition-all">
-                                            <img
-                                                src={`/team/${member.username}.jpg`}
-                                                alt={member.name}
-                                                onError={(e) => {
-                                                    const target = e.target;
-                                                    // Strategy: Local -> Unavatar (Insta) -> DiceBear (Cartoon)
-                                                    if (target.src.includes('/team/')) {
-                                                        // Try Insta API
-                                                        target.src = `https://unavatar.io/instagram/${member.username}`;
-                                                    } else if (target.src.includes('unavatar.io')) {
-                                                        // Fallback to DiceBear
-                                                        target.onerror = null;
-                                                        target.src = `https://api.dicebear.com/9.x/avataaars/svg?seed=${member.username}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
-                                                    }
-                                                }}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                        {member.role === 'Leader' && (
-                                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full border-2 border-dark-800 flex items-center justify-center" title="Leader">
-                                                <svg className="w-2.5 h-2.5 text-black fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+                                        <a href={member.url} target="_blank" rel="noopener noreferrer" className="block relative">
+                                            <div className="w-12 h-12 rounded-full overflow-hidden bg-dark-600 ring-2 ring-transparent group-hover:ring-vizor-500 transition-all">
+                                                <img
+                                                    src={`/team/${member.username}.jpg`}
+                                                    alt={member.name}
+                                                    onError={(e) => {
+                                                        const target = e.target;
+                                                        if (target.src.includes('/team/')) {
+                                                            target.src = `https://unavatar.io/instagram/${member.username}`;
+                                                        } else if (target.src.includes('unavatar.io')) {
+                                                            target.onerror = null;
+                                                            target.src = `https://api.dicebear.com/9.x/avataaars/svg?seed=${member.username}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+                                                        }
+                                                    }}
+                                                    className="w-full h-full object-cover"
+                                                />
                                             </div>
-                                        )}
+                                            {member.role === 'Leader' && (
+                                                <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full border-2 border-dark-800 flex items-center justify-center" title="Leader">
+                                                    <svg className="w-2.5 h-2.5 text-black fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+                                                </div>
+                                            )}
+                                        </a>
                                     </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-gray-200 font-medium text-sm group-hover:text-white transition-colors">
-                                            {member.name}
-                                        </span>
+                                    <div className="flex flex-col flex-1">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-200 font-medium text-sm group-hover:text-white transition-colors">
+                                                {member.name}
+                                            </span>
+                                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                {member.linkedin && (
+                                                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-500 transition-colors" title="LinkedIn">
+                                                        <Linkedin className="w-4 h-4" />
+                                                    </a>
+                                                )}
+                                                <a href={member.url} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-500 transition-colors" title="Instagram">
+                                                    <Instagram className="w-4 h-4" />
+                                                </a>
+                                            </div>
+                                        </div>
                                         {member.role === 'Leader' && (
                                             <span className="text-[10px] uppercase font-bold text-vizor-400 tracking-wider">
                                                 Team Leader
@@ -209,7 +217,7 @@ const Home = () => {
                                             </span>
                                         )}
                                     </div>
-                                </a>
+                                </div>
                             ))}
                         </div>
                     </motion.div>
@@ -242,7 +250,7 @@ const Home = () => {
             </main>
 
             <footer className="w-full p-6 text-center z-10 text-gray-500 text-sm font-medium border-t border-white/5 bg-dark-900/50 backdrop-blur-md">
-                Made With ❤️ By <span className="text-white hover:text-vizor-400 transition cursor-pointer">Amrit Kumar Gupta</span> & Team
+                Made With ❤️ By <a href="https://www.linkedin.com/in/p1amrit/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-vizor-400 transition cursor-pointer">Amrit Kumar Gupta</a> & Team
             </footer>
         </div>
     );
