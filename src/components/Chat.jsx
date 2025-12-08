@@ -39,11 +39,6 @@ const Chat = ({ socket, roomID, onClose }) => {
             sender: "Me",
         };
 
-        // Emit only to server, handled by returning generic receive-message
-        // But since our server broadcasts to *msg.sender* too for text? 
-        // Wait, socket.io "io.to(room)" includes sender.
-        // But for files we used "socket.to(room)" which excludes sender.
-
         socket.emit("send-message", msgData);
         setNewMessage("");
     };
@@ -68,16 +63,7 @@ const Chat = ({ socket, roomID, onClose }) => {
                 sender: "Me"
             };
             socket.emit("upload-file", fileData);
-
-            // Add my own file locally since server broadcasts 'upload-file' with socket.to (excluding sender)
-            setMessages(prev => [...prev, {
-                message: file.name,
-                fileData: reader.result,
-                fileType: file.type,
-                sender: "Me",
-                type: 'file',
-                timestamp: new Date()
-            }]);
+            // Server broadcasts back to us
         };
     };
 
@@ -116,8 +102,8 @@ const Chat = ({ socket, roomID, onClose }) => {
                             {msg.sender === 'Me' ? 'You' : `Guest (${msg.sender.substr(0, 4)}...)`}
                         </div>
                         <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${msg.sender === 'Me'
-                                ? 'bg-vizor-600 text-white rounded-tr-sm'
-                                : 'bg-dark-700 text-gray-200 rounded-tl-sm'
+                            ? 'bg-vizor-600 text-white rounded-tr-sm'
+                            : 'bg-dark-700 text-gray-200 rounded-tl-sm'
                             }`}>
                             {msg.type === 'text' ? (
                                 <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.message}</p>

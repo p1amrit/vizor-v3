@@ -38,7 +38,8 @@ io.on("connection", socket => {
     });
 
     socket.on("sending-signal", payload => {
-        io.to(payload.userToSignal).emit("user-joined", { signal: payload.signal, callerID: payload.callerID });
+        // Security & Stability: Force callerID to be the actual socket ID
+        io.to(payload.userToSignal).emit("user-joined", { signal: payload.signal, callerID: socket.id });
     });
 
     socket.on("returning-signal", payload => {
@@ -51,16 +52,18 @@ io.on("connection", socket => {
         if (room) {
             room = room.filter(id => id !== socket.id);
             users[roomID] = room;
+            // Notify remaining users to remove the peer
+            socket.to(roomID).emit('user-left', socket.id);
         }
-        socket.broadcast.emit('user-left', socket.id);
     });
 
     socket.on("send-message", ({ roomID, message, sender }) => {
-        io.to(roomID).emit("receive-message", { message, sender, type: 'text', timestamp: new Date() });
+        // Broadcast to everyone in room including sender (so they see their own message confirmed from server)
+        io.in(roomID).emit("receive-message", { message, sender, type: 'text', timestamp: new Date() });
     });
 
     socket.on("upload-file", ({ roomID, fileData, fileName, fileType, sender }) => {
-        socket.to(roomID).emit("receive-message", {
+        io.in(roomID).emit("receive-message", {
             message: fileName,
             fileData,
             fileType,
