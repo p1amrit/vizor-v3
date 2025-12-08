@@ -176,6 +176,12 @@ const Room = () => {
     };
 
     const toggleScreenShare = () => {
+        // Mobile check
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            alert("Screen sharing is currently only supported on Desktop browsers.");
+            return;
+        }
+
         if (!isScreenSharing) {
             navigator.mediaDevices.getDisplayMedia({ cursor: true })
                 .then(screenStream => {
@@ -245,6 +251,7 @@ const Room = () => {
                         type="text"
                         placeholder="Enter your name"
                         value={username}
+                        maxLength={15}
                         onChange={(e) => setUsername(e.target.value)}
                         className="w-full bg-dark-700 text-white rounded-xl px-4 py-3 mb-4 focus:outline-none focus:ring-2 focus:ring-vizor-500"
                     />
