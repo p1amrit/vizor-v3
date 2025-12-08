@@ -174,14 +174,12 @@ const Home = () => {
                                                 src={`https://unavatar.io/instagram/${member.username}`}
                                                 alt={member.name}
                                                 onError={(e) => {
-                                                    e.target.style.display = 'none';
-                                                    e.target.nextSibling.style.display = 'flex';
+                                                    // Fallback to DiceBear cool avatars
+                                                    e.target.onerror = null; // prevent infinite loop
+                                                    e.target.src = `https://api.dicebear.com/9.x/avataaars/svg?seed=${member.username}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
                                                 }}
                                                 className="w-full h-full object-cover"
                                             />
-                                            <div className="w-full h-full bg-gradient-to-br from-vizor-500 to-vizor-accent hidden items-center justify-center text-xs font-bold text-white absolute top-0 left-0">
-                                                {member.name.split(' ').map(n => n[0]).join('')}
-                                            </div>
                                         </div>
                                         {member.role === 'Leader' && (
                                             <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full border-2 border-dark-800 flex items-center justify-center" title="Leader">
