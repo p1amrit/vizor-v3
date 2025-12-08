@@ -192,7 +192,7 @@ const Home = () => {
                                     </div>
                                     <div className="flex flex-col flex-1">
                                         <div className="flex justify-between items-center">
-                                            <span className="text-gray-200 font-medium text-sm group-hover:text-white transition-colors">
+                                            <span className="text-gray-200 font-medium text-sm group-hover:text-white transition-colors whitespace-nowrap">
                                                 {member.name}
                                             </span>
                                             <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
