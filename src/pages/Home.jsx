@@ -131,10 +131,59 @@ const Home = () => {
                         ))}
                     </div>
                 </motion.div>
+                {/* Team & Guidance Section */}
+                <div className="mt-24 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 text-left mb-20 relative z-10">
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        className="bg-dark-800/50 backdrop-blur-sm p-8 rounded-3xl border border-white/5"
+                    >
+                        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                            <Users className="w-6 h-6 text-vizor-500" />
+                            Our Team
+                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {['Amrit Kumar Gupta', 'Sunny Yadav', 'Abhinav Singh', 'Talib Shiddique'].map((member, idx) => (
+                                <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-dark-700/50 hover:bg-dark-700 transition-colors">
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vizor-500 to-vizor-accent flex items-center justify-center text-xs font-bold text-white">
+                                        {member.split(' ').map(n => n[0]).join('')}
+                                    </div>
+                                    <span className="text-gray-200 font-medium text-sm">{member}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        className="bg-dark-800/50 backdrop-blur-sm p-8 rounded-3xl border border-white/5"
+                    >
+                        <h3 className="text-2xl font-bold text-white mb-6">
+                            Under Guidance Of
+                        </h3>
+                        <div className="space-y-4">
+                            <div className="p-4 rounded-xl bg-gradient-to-r from-vizor-900/50 to-transparent border-l-4 border-vizor-500">
+                                <p className="text-lg font-semibold text-white">Mr. Vidhu Sharma</p>
+                                <p className="text-sm text-vizor-400">Mentor</p>
+                            </div>
+                            <div className="p-4 rounded-xl bg-gradient-to-r from-vizor-900/50 to-transparent border-l-4 border-vizor-500">
+                                <p className="text-lg font-semibold text-white">Mr. Rahul Gupta</p>
+                                <p className="text-sm text-vizor-400">Mentor</p>
+                            </div>
+                            <div className="mt-6 pt-6 border-t border-white/10">
+                                <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Institution</p>
+                                <p className="text-xl font-bold text-white">SRGI Lucknow</p>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
             </main>
 
-            <footer className="w-full p-6 text-center z-10 text-gray-500 text-sm font-medium">
-                Made With ❤️ By <span className="text-white hover:text-vizor-400 transition cursor-pointer">Amrit</span>
+            <footer className="w-full p-6 text-center z-10 text-gray-500 text-sm font-medium border-t border-white/5 bg-dark-900/50 backdrop-blur-md">
+                Made With ❤️ By <span className="text-white hover:text-vizor-400 transition cursor-pointer">Amrit Kumar Gupta</span> & Team
             </footer>
         </div>
     );
