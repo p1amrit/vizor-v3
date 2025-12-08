@@ -13,10 +13,18 @@ const io = new Server(server, {
 
 const users = {};
 const socketToRoom = {};
+const socketToName = {};
 
 io.on("connection", socket => {
-    socket.on("join-room", roomID => {
-        console.log(`User ${socket.id} joined room ${roomID}`);
+    socket.on("join-room", payload => {
+        // Handle legacy string payload or new object payload
+        const roomID = typeof payload === 'object' ? payload.roomID : payload;
+        const username = typeof payload === 'object' ? payload.username : 'Guest';
+
+        console.log(`User ${socket.id} (${username}) joined room ${roomID}`);
+
+        socketToName[socket.id] = username;
+
         if (users[roomID]) {
             const length = users[roomID].length;
             if (length === 10) {
@@ -39,7 +47,11 @@ io.on("connection", socket => {
 
     socket.on("sending-signal", payload => {
         // Security & Stability: Force callerID to be the actual socket ID
-        io.to(payload.userToSignal).emit("user-joined", { signal: payload.signal, callerID: socket.id });
+        io.to(payload.userToSignal).emit("user-joined", {
+            signal: payload.signal,
+            callerID: socket.id,
+            username: payload.username // Pass username through
+        });
     });
 
     socket.on("returning-signal", payload => {
@@ -48,12 +60,17 @@ io.on("connection", socket => {
 
     socket.on("disconnect", () => {
         const roomID = socketToRoom[socket.id];
+        const name = socketToName[socket.id] || 'User';
+
         let room = users[roomID];
         if (room) {
             room = room.filter(id => id !== socket.id);
             users[roomID] = room;
             // Notify remaining users to remove the peer
-            socket.to(roomID).emit('user-left', socket.id);
+            socket.to(roomID).emit('user-left', { id: socket.id, name });
+
+            // Clean up
+            delete socketToName[socket.id];
         }
     });
 

@@ -48,7 +48,7 @@ const Room = () => {
                 userVideo.current.srcObject = stream;
             }
 
-            socketRef.current.emit("join-room", roomID);
+            socketRef.current.emit("join-room", { roomID, username });
 
             socketRef.current.on("all-users", users => {
                 const peers = [];
@@ -77,7 +77,8 @@ const Room = () => {
                     peer,
                 };
                 setPeers(users => [...users, peerObj]);
-                toast.success('New user joined the room 🚀', {
+                const newUserName = payload.username || 'New user';
+                toast.success(`${newUserName} joined the room 🚀`, {
                     style: {
                         borderRadius: '10px',
                         background: '#333',
@@ -93,7 +94,11 @@ const Room = () => {
                 }
             });
 
-            socketRef.current.on("user-left", id => {
+            socketRef.current.on("user-left", payload => {
+                // Backend now sends { id, name } or sometimes just id if legacy
+                const id = payload.id || payload;
+                const name = payload.name || 'User';
+
                 const peerObj = peersRef.current.find(p => p.peerID === id);
                 if (peerObj) {
                     peerObj.peer.destroy();
@@ -101,8 +106,7 @@ const Room = () => {
                 const peers = peersRef.current.filter(p => p.peerID !== id);
                 peersRef.current = peers;
                 setPeers(peers);
-                toast('User left the room', {
-                    icon: '👋',
+                toast(`${name} left the room 👋`, {
                     style: {
                         borderRadius: '10px',
                         background: '#333',
@@ -135,7 +139,7 @@ const Room = () => {
         });
 
         peer.on("signal", signal => {
-            socketRef.current.emit("sending-signal", { userToSignal, callerID, signal })
+            socketRef.current.emit("sending-signal", { userToSignal, callerID, signal, username })
         })
 
         return peer;
