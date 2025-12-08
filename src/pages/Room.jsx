@@ -272,10 +272,7 @@ const Room = () => {
         );
     }
 
-    // Just in case username exists but flag wasn't set (e.g. from localstorage)
-    if (!isNameSet && username) {
-        setIsNameSet(true);
-    }
+
 
     return (
         <div className="flex flex-col h-screen bg-dark-900 overflow-hidden relative">
