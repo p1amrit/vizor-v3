@@ -133,12 +133,12 @@ const Chat = ({ socket, roomID, onClose }) => {
             </div>
 
             {/* Input Area */}
-            <div className="p-4 bg-dark-900/50 border-t border-white/5">
-                <form onSubmit={sendMessage} className="flex items-end gap-2">
+            <div className="p-4 bg-dark-900/50 border-t border-white/5 pb-8 md:pb-4">
+                <form onSubmit={sendMessage} className="flex items-center gap-2">
                     <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="p-3 bg-dark-700 rounded-xl text-gray-400 hover:text-white hover:bg-dark-600 transition"
+                        className="p-3 bg-dark-700 rounded-xl text-gray-400 hover:text-white hover:bg-dark-600 transition shrink-0"
                         title="Upload File"
                     >
                         <Paperclip className="w-5 h-5" />
@@ -152,24 +152,19 @@ const Chat = ({ socket, roomID, onClose }) => {
                     />
 
                     <div className="flex-1 relative">
-                        <textarea
+                        <input
+                            type="text"
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    sendMessage(e);
-                                }
-                            }}
                             placeholder="Type a message..."
-                            className="w-full bg-dark-700 text-white placeholder-gray-500 rounded-xl py-3 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-vizor-500/50 resize-none h-[48px] max-h-32 scrollbar-hide"
+                            className="w-full bg-dark-700 text-white placeholder-gray-500 rounded-xl py-3 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-vizor-500/50 h-[48px] text-base"
                         />
                     </div>
 
                     <button
                         type="submit"
                         disabled={!newMessage.trim()}
-                        className="p-3 bg-vizor-600 rounded-xl text-white hover:bg-vizor-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="p-3 bg-vizor-600 rounded-xl text-white hover:bg-vizor-500 transition disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                     >
                         <Send className="w-5 h-5" />
                     </button>
