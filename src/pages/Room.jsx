@@ -4,8 +4,9 @@ import Peer from "simple-peer";
 import { useParams, useNavigate } from 'react-router-dom';
 import Video from '../components/Video';
 import Chat from '../components/Chat';
-import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, Users, MessageSquare, Copy, UserMinus } from 'lucide-react';
+import { Mic, MicOff, Video as VideoIcon, VideoOff, PhoneOff, Users, MessageSquare, Copy, UserMinus, Smile } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Room = () => {
     const [peers, setPeers] = useState([]);
@@ -27,6 +28,11 @@ const Room = () => {
     const [username, setUsername] = useState(localStorage.getItem('vizor_username') || '');
     const [isNameSet, setIsNameSet] = useState(false);
     const [isHost, setIsHost] = useState(false);
+
+    // Reactions
+    const [showReactionMenu, setShowReactionMenu] = useState(false);
+    const [reactions, setReactions] = useState([]);
+    const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '👏', '🎉'];
 
     // Use environment variable for server URL (Production) or default to relative path (Local Proxy)
     const SERVER_URL = import.meta.env.VITE_SERVER_URL || '/';
@@ -128,6 +134,13 @@ const Room = () => {
                 navigate('/');
             });
 
+            socketRef.current.on("receive-reaction", (payload) => {
+                setReactions(prev => [...prev, payload]);
+                setTimeout(() => {
+                    setReactions(prev => prev.filter(r => r.id !== payload.id));
+                }, 4000);
+            });
+
         }).catch(err => {
             console.error("Failed to get local stream", err);
             // Permissions handled by browser mostly, but good to catch
@@ -138,6 +151,15 @@ const Room = () => {
             // socketRef.current.disconnect(); 
         };
     }, [roomID]);
+
+    useEffect(() => {
+        if (userVideo.current && stream) {
+            userVideo.current.srcObject = stream;
+            userVideo.current.onloadedmetadata = () => {
+                userVideo.current.play().catch((e) => console.error("Error playing video:", e));
+            };
+        }
+    }, [stream, isNameSet]);
 
     function createPeer(userToSignal, callerID, stream) {
         const peer = new Peer({
@@ -213,6 +235,11 @@ const Room = () => {
         if (confirm("Are you sure you want to kick this user?")) {
             socketRef.current.emit("kick-user", { roomID, targetID });
         }
+    };
+
+    const sendReaction = (emoji) => {
+        socketRef.current.emit("send-reaction", { roomID, reaction: emoji, sender: username });
+        setShowReactionMenu(false);
     };
 
     const toggleScreenShare = () => {
@@ -319,6 +346,31 @@ const Room = () => {
 
     return (
         <div className="flex flex-col h-screen bg-dark-900 overflow-hidden relative">
+            {/* Reaction Overlay */}
+            <div className="pointer-events-none fixed inset-0 z-[100] overflow-hidden">
+                <AnimatePresence>
+                    {reactions.map((r) => (
+                        <motion.div
+                            key={r.id}
+                            initial={{ opacity: 0, y: 100, scale: 0.5 }}
+                            animate={{ opacity: 1, y: -window.innerHeight * 0.4, scale: 1.5 }}
+                            exit={{ opacity: 0, scale: 0.5 }}
+                            transition={{ duration: 2, ease: "easeOut" }}
+                            className="absolute flex flex-col items-center"
+                            style={{
+                                left: `${Math.random() * 80 + 10}%`,
+                                bottom: '100px'
+                            }}
+                        >
+                            <span className="text-4xl filter drop-shadow-lg">{r.reaction}</span>
+                            <span className="text-xs text-white bg-black/50 px-2 py-0.5 rounded-full mt-1 backdrop-blur-sm">
+                                {r.sender}
+                            </span>
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+            </div>
+
             <div className="flex flex-1 overflow-hidden">
                 {/* Main Video Area - Grid System */}
                 <div className={`flex-1 p-4 overflow-y-auto w-full transition-all duration-300 ${isChatOpen ? 'pr-[384px] md:pr-0' : ''}`}>
@@ -414,6 +466,36 @@ const Room = () => {
                     >
                         <MessageSquare className="w-5 h-5" />
                     </button>
+                    {/* Reaction Button */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowReactionMenu(!showReactionMenu)}
+                            className={`p-3 md:p-4 rounded-full transition-all ${showReactionMenu ? 'bg-vizor-600 text-white' : 'bg-dark-700 hover:bg-dark-600 text-white'}`}
+                        >
+                            <Smile className="w-5 h-5" />
+                        </button>
+                        {/* Popup Menu */}
+                        <AnimatePresence>
+                            {showReactionMenu && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                                    className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-dark-800 border border-white/10 rounded-xl p-2 shadow-2xl flex gap-2"
+                                >
+                                    {REACTION_EMOJIS.map(emoji => (
+                                        <button
+                                            key={emoji}
+                                            onClick={() => sendReaction(emoji)}
+                                            className="text-2xl hover:bg-white/10 p-2 rounded-lg transition transform hover:scale-125"
+                                        >
+                                            {emoji}
+                                        </button>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
                     <button
                         onClick={leaveCall}
                         className="px-4 md:px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-full font-semibold transition-colors flex items-center gap-2"

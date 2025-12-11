@@ -43,10 +43,10 @@ VIZOR follows a **Mesh Network Topology** for video calls:
 *   **Logic**: When activated, the app replaces the *video track* in the outgoing stream with the *screen track*. This allows peers to see the screen immediately without needing to re-connect.
 *   **Mobile Handling**: Explicitly restricted on mobile browsers due to OS limitations, preventing crashes.
 
-#### C. Real-time Chat & File Sharing
-*   **How it works**: Unlike video, Chat goes through the **Socket.IO Server**.
-*   **Flow**: User A types message -> Sent to Server -> Server Broadcasts to Room -> All Users Receive & Render.
-*   **File Sharing**: Files are converted to `DataURL` (base64) strings and sent via Socket.IO. We implemented a 5MB limit to prevent server overload.
+#### C. Real-time Chat, File Sharing, & Reactions
+*   **Chat**: Goes through Socket.IO. User A types -> Server Broadcasts -> All Users Render.
+*   **File Sharing**: converted to `DataURL` (base64) strings (5MB limit).
+*   **Reactions**: Users can send animated floating emojis (👍, ❤️, 😂, etc.) that appear on everyone's screen instantly using `framer-motion`.
 
 #### D. Dynamic Room & User Management
 *   **Room IDs**: Generated randomly or user-defined URLs.
