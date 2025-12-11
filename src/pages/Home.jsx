@@ -238,7 +238,7 @@ const Home = () => {
                             </div>
                             <div className="p-4 rounded-xl bg-gradient-to-r from-vizor-900/50 to-transparent border-l-4 border-vizor-500">
                                 <p className="text-lg font-semibold text-white">Mr. Rahul Gupta</p>
-                                <p className="text-sm text-vizor-400">Mentor</p>
+                                <p className="text-sm text-vizor-400">HOD</p>
                             </div>
                             <div className="mt-6 pt-6 border-t border-white/10">
                                 <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Institution</p>

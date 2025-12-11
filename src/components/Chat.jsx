@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Paperclip, X, File, Download } from 'lucide-react';
 
-const Chat = ({ socket, roomID, onClose }) => {
+const Chat = ({ socket, roomID, onClose, username }) => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const messagesEndRef = useRef(null);
@@ -36,7 +36,8 @@ const Chat = ({ socket, roomID, onClose }) => {
         const msgData = {
             roomID,
             message: newMessage,
-            sender: "Me",
+            sender: username,
+            timestamp: new Date().toISOString()
         };
 
         socket.emit("send-message", msgData);
@@ -60,7 +61,8 @@ const Chat = ({ socket, roomID, onClose }) => {
                 fileData: reader.result,
                 fileName: file.name,
                 fileType: file.type,
-                sender: "Me"
+                sender: username,
+                timestamp: new Date().toISOString()
             };
             socket.emit("upload-file", fileData);
             // Server broadcasts back to us
@@ -96,39 +98,42 @@ const Chat = ({ socket, roomID, onClose }) => {
                         <p className="text-sm">Start the conversation!</p>
                     </div>
                 )}
-                {messages.map((msg, idx) => (
-                    <div key={idx} className={`flex flex-col ${msg.sender === 'Me' ? 'items-end' : 'items-start'}`}>
-                        <div className={`text-xs text-gray-400 mb-1 px-1`}>
-                            {msg.sender === 'Me' ? 'You' : `Guest (${msg.sender.substr(0, 4)}...)`}
-                        </div>
-                        <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${msg.sender === 'Me'
-                            ? 'bg-vizor-600 text-white rounded-tr-sm'
-                            : 'bg-dark-700 text-gray-200 rounded-tl-sm'
-                            }`}>
-                            {msg.type === 'text' ? (
-                                <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.message}</p>
-                            ) : (
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-black/20 rounded-lg">
-                                        <File className="w-6 h-6" />
+                {messages.map((msg, idx) => {
+                    const isMe = msg.sender === username;
+                    return (
+                        <div key={idx} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                            <div className={`text-xs text-gray-400 mb-1 px-1`}>
+                                {isMe ? 'You' : msg.sender}
+                            </div>
+                            <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${isMe
+                                ? 'bg-vizor-600 text-white rounded-tr-sm'
+                                : 'bg-dark-700 text-gray-200 rounded-tl-sm'
+                                }`}>
+                                {msg.type === 'text' ? (
+                                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.message}</p>
+                                ) : (
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-black/20 rounded-lg">
+                                            <File className="w-6 h-6" />
+                                        </div>
+                                        <div className="flex flex-col overflow-hidden">
+                                            <span className="text-sm font-medium truncate w-32" title={msg.message}>{msg.message}</span>
+                                            <button
+                                                onClick={() => downloadFile(msg.fileData, msg.message)}
+                                                className="text-xs text-blue-200 hover:text-white flex items-center gap-1 mt-1 transition"
+                                            >
+                                                <Download className="w-3 h-3" /> Download
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="flex flex-col overflow-hidden">
-                                        <span className="text-sm font-medium truncate w-32" title={msg.message}>{msg.message}</span>
-                                        <button
-                                            onClick={() => downloadFile(msg.fileData, msg.message)}
-                                            className="text-xs text-blue-200 hover:text-white flex items-center gap-1 mt-1 transition"
-                                        >
-                                            <Download className="w-3 h-3" /> Download
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
+                                )}
+                            </div>
+                            <span className="text-[10px] text-gray-500 mt-1 px-1">
+                                {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
                         </div>
-                        <span className="text-[10px] text-gray-500 mt-1 px-1">
-                            {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                    </div>
-                ))}
+                    );
+                })}
                 <div ref={messagesEndRef} />
             </div>
 

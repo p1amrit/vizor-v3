@@ -121,6 +121,10 @@ io.on("connection", socket => {
             timestamp: new Date()
         });
     });
+
+    socket.on("send-reaction", ({ roomID, reaction, sender }) => {
+        io.in(roomID).emit("receive-reaction", { reaction, sender, id: Math.random().toString(36).substr(2, 9) });
+    });
 });
 
 const PORT = process.env.PORT || 5000;

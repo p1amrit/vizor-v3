@@ -405,17 +405,19 @@ const Room = () => {
                     </div>
                 </div>
 
-                {/* Chat Sidebar for Desktop (Relative) & Mobile (Fixed in Component) */}
-                {isChatOpen && (
-                    <div className="w-96 hidden md:block h-full border-l border-white/10 bg-dark-800 z-10">
-                        <Chat socket={socketRef.current} roomID={roomID} onClose={() => setIsChatOpen(false)} />
+                {/* Chat Sidebar - Single Instance for Persistence */}
+                <div className={`${isChatOpen ? '' : 'hidden'} h-full md:block z-50 md:z-auto ${isChatOpen ? 'fixed inset-0 md:static md:inset-auto' : ''}`}>
+                    {/* Note: The Chat component handles its own responsive styling (fixed on mobile, static on desktop)
+                         but we need to control visibility without unmounting.
+                         However, Chat component has fixed/static classes BUILT IN. 
+                         If we use a wrapper that is hidden, it hides. 
+                         But we need to ensure the layout is correct on desktop.
+                      */}
+                    {/* Actually, simply rendering it with a display toggle style is best */}
+                    <div style={{ display: isChatOpen ? 'block' : 'none' }}>
+                        <Chat socket={socketRef.current} roomID={roomID} username={username} onClose={() => setIsChatOpen(false)} />
                     </div>
-                )}
-                {isChatOpen && (
-                    <div className="md:hidden">
-                        <Chat socket={socketRef.current} roomID={roomID} onClose={() => setIsChatOpen(false)} />
-                    </div>
-                )}
+                </div>
             </div>
 
             {/* Bottom Controls */}
