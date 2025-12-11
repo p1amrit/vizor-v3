@@ -7,44 +7,7 @@ import { Video, Users, Zap, Hash, Copy, Check, Linkedin, Instagram } from 'lucid
 const Home = () => {
     const navigate = useNavigate();
     const [joinRoomId, setJoinRoomId] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
 
-    React.useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 2000); // 2 seconds animation
-        return () => clearTimeout(timer);
-    }, []);
-
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center h-screen bg-black overflow-hidden relative">
-                <motion.div
-                    className="absolute inset-0 bg-vizor-600"
-                    initial={{ scale: 0, borderRadius: "100%" }}
-                    animate={{ scale: [0, 1.5, 0], borderRadius: ["100%", "0%", "100%"] }}
-                    transition={{ duration: 1.5, ease: "easeInOut", times: [0, 0.5, 1] }}
-                />
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.5 }}
-                    className="z-10 flex flex-col items-center"
-                >
-                    <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl mb-4 border border-white/20 shadow-2xl">
-                        <Video className="w-12 h-12 text-white" />
-                    </div>
-                    <motion.h1
-                        className="text-4xl font-bold text-white tracking-widest"
-                        animate={{ letterSpacing: ["0.1em", "0.5em"] }} // Cool expanding text
-                        transition={{ duration: 1.5, ease: "easeInOut" }}
-                    >
-                        VIZOR
-                    </motion.h1>
-                </motion.div>
-            </div>
-        );
-    }
 
     const [copied, setCopied] = useState(false);
 
