@@ -190,11 +190,11 @@ const Home = () => {
                                         </a>
                                     </div>
                                     <div className="flex flex-col flex-1">
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-gray-200 font-medium text-sm group-hover:text-white transition-colors whitespace-nowrap">
+                                        <div className="flex justify-between items-center gap-2">
+                                            <span className="text-gray-200 font-bold text-sm group-hover:text-white transition-colors truncate">
                                                 {member.name}
                                             </span>
-                                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="flex gap-2 shrink-0 opacity-80 hover:opacity-100 transition-opacity">
                                                 {member.linkedin && (
                                                     <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-500 transition-colors" title="LinkedIn">
                                                         <Linkedin className="w-4 h-4" />
