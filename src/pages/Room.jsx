@@ -374,7 +374,10 @@ const Room = () => {
             <div className="flex flex-1 overflow-hidden">
                 {/* Main Video Area - Grid System */}
                 <div className={`flex-1 p-4 overflow-y-auto w-full transition-all duration-300 ${isChatOpen ? 'pr-[384px] md:pr-0' : ''}`}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-full w-full max-w-7xl mx-auto align-content-center justify-center auto-rows-fr">
+                    <div className={`grid gap-2 md:gap-4 w-full max-w-7xl mx-auto align-content-start justify-center ${peers.length + 1 <= 2
+                            ? 'grid-cols-1 md:grid-cols-2 h-full'
+                            : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-rows-min'
+                        }`}>
                         {/* My Video */}
                         <div className="relative aspect-video bg-gray-800 rounded-xl overflow-hidden border border-gray-700 shadow-2xl ring-2 ring-vizor-500/20 w-full mb-4 md:mb-0">
                             <video muted ref={userVideo} autoPlay playsInline className="w-full h-full object-cover transform scale-x-[-1]" />

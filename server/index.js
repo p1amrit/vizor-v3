@@ -29,7 +29,7 @@ io.on("connection", socket => {
 
         if (users[roomID]) {
             const length = users[roomID].length;
-            if (length === 10) {
+            if (length === 30) {
                 socket.emit("room-full");
                 return;
             }
