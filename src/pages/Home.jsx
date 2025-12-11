@@ -22,7 +22,7 @@ const Home = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-dark-800 via-dark-900 to-black overflow-hidden relative">
+        <div className="flex flex-col min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-dark-800 via-dark-900 to-black relative">
             {/* Background blobs */}
             <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-vizor-500/20 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-vizor-accent/10 rounded-full blur-[100px] pointer-events-none" />
@@ -42,7 +42,7 @@ const Home = () => {
                 </div>
             </nav>
 
-            <main className="flex-1 flex flex-col items-center justify-center p-6 text-center z-10">
+            <main className="flex-1 flex flex-col items-center justify-center p-6 text-center z-10 w-full">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -108,7 +108,7 @@ const Home = () => {
                     </div>
                 </motion.div>
 
-                {/* Decorative floating elements */}
+                {/* Decorative floating elements skipped for brevity in replacement search */}
                 <motion.div
                     animate={{ y: [0, -20, 0] }}
                     transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
@@ -142,12 +142,12 @@ const Home = () => {
                     </div>
                 </motion.div>
                 {/* Team & Guidance Section */}
-                <div className="mt-24 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 text-left mb-20 relative z-10">
+                <div className="mt-24 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 text-left mb-20 relative z-10 px-4 md:px-0">
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        className="bg-dark-800/50 backdrop-blur-sm p-8 rounded-3xl border border-white/5"
+                        className="bg-dark-800/50 backdrop-blur-sm p-8 rounded-3xl border border-white/5 w-full"
                     >
                         <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                             <Users className="w-6 h-6 text-vizor-500" />
@@ -162,9 +162,9 @@ const Home = () => {
                             ].map((member, idx) => (
                                 <div
                                     key={idx}
-                                    className="flex items-center gap-3 p-3 rounded-xl bg-dark-700/50 hover:bg-dark-700 transition-all border border-transparent hover:border-vizor-500/30 group"
+                                    className="flex items-center gap-3 p-3 rounded-xl bg-dark-700/50 hover:bg-dark-700 transition-all border border-transparent hover:border-vizor-500/30 group overflow-hidden"
                                 >
-                                    <div className="relative">
+                                    <div className="relative shrink-0">
                                         <a href={member.url} target="_blank" rel="noopener noreferrer" className="block relative">
                                             <div className="w-12 h-12 rounded-full overflow-hidden bg-dark-600 ring-2 ring-transparent group-hover:ring-vizor-500 transition-all">
                                                 <img
@@ -189,19 +189,19 @@ const Home = () => {
                                             )}
                                         </a>
                                     </div>
-                                    <div className="flex flex-col flex-1">
-                                        <div className="flex justify-between items-center gap-2">
-                                            <span className="text-gray-200 font-bold text-sm group-hover:text-white transition-colors truncate">
+                                    <div className="flex flex-col flex-1 min-w-0">
+                                        <div className="flex justify-between items-center gap-1">
+                                            <span className="text-gray-200 font-bold text-sm group-hover:text-white transition-colors truncate" title={member.name}>
                                                 {member.name}
                                             </span>
-                                            <div className="flex gap-2 shrink-0 opacity-80 hover:opacity-100 transition-opacity">
+                                            <div className="flex gap-1.5 shrink-0 opacity-80 hover:opacity-100 transition-opacity">
                                                 {member.linkedin && (
                                                     <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-500 transition-colors" title="LinkedIn">
-                                                        <Linkedin className="w-4 h-4" />
+                                                        <Linkedin className="w-3.5 h-3.5" />
                                                     </a>
                                                 )}
                                                 <a href={member.url} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-500 transition-colors" title="Instagram">
-                                                    <Instagram className="w-4 h-4" />
+                                                    <Instagram className="w-3.5 h-3.5" />
                                                 </a>
                                             </div>
                                         </div>
