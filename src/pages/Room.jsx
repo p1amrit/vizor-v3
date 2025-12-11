@@ -35,6 +35,9 @@ const Room = () => {
     const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '👏', '🎉'];
 
     // Use environment variable for server URL (Production) or default to relative path (Local Proxy)
+    const streamRef = useRef();
+
+    // Use environment variable for server URL (Production) or default to relative path (Local Proxy)
     const SERVER_URL = import.meta.env.VITE_SERVER_URL || '/';
     const [connectionStatus, setConnectionStatus] = useState('Connecting...');
 
@@ -51,6 +54,7 @@ const Room = () => {
 
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
             setStream(stream);
+            streamRef.current = stream;
             if (userVideo.current) {
                 userVideo.current.srcObject = stream;
             }
@@ -130,6 +134,9 @@ const Room = () => {
 
             socketRef.current.on("kicked", () => {
                 toast.error("You have been kicked by the host 🚫");
+                if (streamRef.current) {
+                    streamRef.current.getTracks().forEach(track => track.stop());
+                }
                 socketRef.current.disconnect();
                 navigate('/');
             });
@@ -147,8 +154,12 @@ const Room = () => {
         });
 
         return () => {
-            // Cleanup handled on disconnect by server mainly
-            // socketRef.current.disconnect(); 
+            if (socketRef.current) {
+                socketRef.current.disconnect();
+            }
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop());
+            }
         };
     }, [roomID]);
 
@@ -375,8 +386,8 @@ const Room = () => {
                 {/* Main Video Area - Grid System */}
                 <div className={`flex-1 p-4 overflow-y-auto w-full transition-all duration-300 ${isChatOpen ? 'pr-[384px] md:pr-0' : ''}`}>
                     <div className={`grid gap-2 md:gap-4 w-full max-w-7xl mx-auto align-content-start justify-center ${peers.length + 1 <= 2
-                            ? 'grid-cols-1 md:grid-cols-2 h-full'
-                            : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-rows-min'
+                        ? 'grid-cols-1 md:grid-cols-2 h-full'
+                        : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-rows-min'
                         }`}>
                         {/* My Video */}
                         <div className="relative aspect-video bg-gray-800 rounded-xl overflow-hidden border border-gray-700 shadow-2xl ring-2 ring-vizor-500/20 w-full mb-4 md:mb-0">
