@@ -35,10 +35,7 @@ const Home = () => {
                     <span className="text-2xl font-bold tracking-tight">VIZOR</span>
                 </div>
                 <div className="hidden md:flex gap-6 text-gray-400">
-                    <button className="hover:text-white transition-colors">Product</button>
-                    <button className="hover:text-white transition-colors">Solutions</button>
-                    <button className="hover:text-white transition-colors">Resources</button>
-                    <button className="hover:text-white transition-colors">Pricing</button>
+                    {/* Navigation items removed */}
                 </div>
                 <div className="flex gap-4">
                     {/* Auth removed as per request */}
