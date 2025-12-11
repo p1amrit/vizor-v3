@@ -6,7 +6,8 @@ import Room from './pages/Room';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-dark-900 text-white">
+      <div className="min-h-screen bg-dark-900 text-white relative">
+        <div className="premium-glow-border" />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/room/:roomID" element={<Room />} />
