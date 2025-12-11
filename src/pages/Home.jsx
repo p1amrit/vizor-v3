@@ -191,7 +191,7 @@ const Home = () => {
                                     </div>
                                     <div className="flex flex-col flex-1 min-w-0">
                                         <div className="flex justify-between items-center gap-1">
-                                            <span className="text-gray-200 font-bold text-sm group-hover:text-white transition-colors truncate" title={member.name}>
+                                            <span className="text-gray-200 font-bold text-sm group-hover:text-white transition-colors leading-tight">
                                                 {member.name}
                                             </span>
                                             <div className="flex gap-1.5 shrink-0 opacity-80 hover:opacity-100 transition-opacity">
