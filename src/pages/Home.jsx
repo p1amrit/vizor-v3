@@ -155,7 +155,7 @@ const Home = () => {
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {[
-                                { name: 'Amrit Kumar Gupta', role: 'Leader', username: 'p1amrit', url: 'https://www.instagram.com/p1amrit/', linkedin: 'https://www.linkedin.com/in/p1amrit/' },
+                                { name: 'Amrit Kr Gupta', role: 'Leader', username: 'p1amrit', url: 'https://www.instagram.com/p1amrit/', linkedin: 'https://www.linkedin.com/in/p1amrit/' },
                                 { name: 'Sunny Yadav', username: 'sunnyyadav__03', url: 'https://www.instagram.com/sunnyyadav__03/' },
                                 { name: 'Abhinav Singh', username: 'abhinav_9293', url: 'https://www.instagram.com/abhinav_9293/' },
                                 { name: 'Talib Shiddique', username: 'mr.siddiqui_003', url: 'https://www.instagram.com/mr.siddiqui_003/' }
@@ -172,11 +172,14 @@ const Home = () => {
                                                     alt={member.name}
                                                     onError={(e) => {
                                                         const target = e.target;
+                                                        // Prevent infinite error loops by checking current src
                                                         if (target.src.includes('/team/')) {
                                                             target.src = `https://unavatar.io/instagram/${member.username}`;
                                                         } else if (target.src.includes('unavatar.io')) {
-                                                            target.onerror = null;
+                                                            target.onerror = null; // Stop further retries if dicebear also fails
                                                             target.src = `https://api.dicebear.com/9.x/avataaars/svg?seed=${member.username}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+                                                        } else {
+                                                            target.onerror = null;
                                                         }
                                                     }}
                                                     className="w-full h-full object-cover"
@@ -191,7 +194,7 @@ const Home = () => {
                                     </div>
                                     <div className="flex flex-col flex-1 min-w-0">
                                         <div className="flex justify-between items-center gap-1">
-                                            <span className="text-gray-200 font-bold text-sm group-hover:text-white transition-colors leading-tight">
+                                            <span className="text-gray-200 font-bold text-sm group-hover:text-white transition-colors truncate" title={member.name}>
                                                 {member.name}
                                             </span>
                                             <div className="flex gap-1.5 shrink-0 opacity-80 hover:opacity-100 transition-opacity">
